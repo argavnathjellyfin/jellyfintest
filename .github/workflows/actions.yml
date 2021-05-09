@@ -56,7 +56,7 @@ jobs:
           cd ..
           sudo rclone mount Media:/ /home/runner/mount/  --daemon --allow-other --cache-db-purge --buffer-size 32M --use-mmap --dir-cache-time 4h --drive-chunk-size 16M --timeout 1h --vfs-cache-mode minimal --vfs-read-chunk-size 128M --vfs-read-chunk-size-limit 1G --fast-list
           sudo systemctl start jellyfin
-          timeout 2m cloudflared --url localhost:8096 --hostname ${{ secrets.JELLYFIN_DOMAIN }} || ( [[ $? -eq 124 ]] && \echo "WARNING: Timeout reached for Jellyfin, but that's OK" )
+          timeout 5m cloudflared --url localhost:8096 --hostname ${{ secrets.JELLYFIN_DOMAIN }} || ( [[ $? -eq 124 ]] && \echo "WARNING: Timeout reached for Jellyfin, but that's OK" )
           sudo systemctl stop jellyfin
           sudo rm -r /home/runner/work/jellyfintest/jellyfintest/jellyfinconf/
           cd /home/runner/work/jellyfintest/jellyfintest/
