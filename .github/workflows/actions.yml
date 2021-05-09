@@ -16,10 +16,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: rclone Install
+        run: |
+          curl https://rclone.org/install.sh | sudo bash
+          mkdir -p ~/.config/rclone
+      - name: rclone Config
+        run: |
+          cat >  ~/.config/rclone/rclone.conf  << EOF
+          ${{ secrets.RCLONE_CONFIG }}
+          EOF
       - name: Jellyfin Install
         run: |
-          sudo apt install aria2
-          sudo aria2c --enable-rpc --rpc-listen-all --daemon
+          sudo mkdir -p /home/runner/mount
           sudo apt install apt-transport-https
           wget -O - https://repo.jellyfin.org/jellyfin_team.gpg.key | sudo apt-key add -
           echo "deb [arch=$( dpkg --print-architecture )] https://repo.jellyfin.org/$( awk -F'=' '/^ID=/{ print $NF }' /etc/os-release ) $( awk -F'=' '/^VERSION_CODENAME=/{ print $NF }' /etc/os-release ) main" | sudo tee /etc/apt/sources.list.d/jellyfin.list
@@ -46,9 +54,10 @@ jobs:
           ${{ secrets.CF_CERT }}
           EOF
           cd ..
-          sudo systemctl start jellyfin
-          timeout 345m cloudflared --url localhost:8096 --hostname ${{ secrets.JELLYFIN_DOMAIN }} || ( [[ $? -eq 124 ]] && \echo "WARNING: Timeout reached for Jellyfin, but that's OK" )  & timeout 345m cloudflared --url localhost:6800 --hostname ${{ secrets.ARIA2_DOMAIN }} || ( [[ $? -eq 124 ]] && \echo "WARNING: Timeout reached for aria2, but that's OK" )
+          sudo rclone mount Media:/ /home/runner/mount/  --daemon --allow-other --cache-db-purge --buffer-size 32M --use-mmap --dir-cache-time 4h --drive-chunk-size 16M --timeout 1h --vfs-cache-mode minimal --vfs-read-chunk-size 128M --vfs-read-chunk-size-limit 1G --fast-list
           sudo systemctl stop jellyfin
+          sudo systemctl start jellyfin
+          timeout 8m cloudflared --url localhost:8096 --hostname ${{ secrets.JELLYFIN_DOMAIN }} || ( [[ $? -eq 124 ]] && \echo "WARNING: Timeout reached for Jellyfin, but that's OK" )
           sudo rm -r /home/runner/work/jellyfintest/jellyfintest/jellyfinconf/
           mkdir jellyfinconf
           cd jellyfinconf
@@ -60,8 +69,8 @@ jobs:
           cd etc
           sudo cp -R /etc/jellyfin /home/runner/work/jellyfintest/jellyfintest/jellyfinconf/etc/
           cd ..
-          sudo git config --global user.name 'cryptbphcoutlook'
-          sudo git config --global user.email 'cryptbphcoutlook@users.noreply.github.com'
+          sudo git config --global user.name 'argavnathjellyfin'
+          sudo git config --global user.email 'argavnathjellyfin@users.noreply.github.com'
           sudo git add .
           sudo git commit -am "Config File"
           sudo git push
