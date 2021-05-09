@@ -4,7 +4,11 @@
   <EnableRealtimeMonitor>true</EnableRealtimeMonitor>
   <EnableChapterImageExtraction>false</EnableChapterImageExtraction>
   <ExtractChapterImagesDuringLibraryScan>false</ExtractChapterImagesDuringLibraryScan>
-  <PathInfos />
+  <PathInfos>
+    <MediaPathInfo>
+      <Path>/home/runner/mount/MediaServer/TV Shows</Path>
+    </MediaPathInfo>
+  </PathInfos>
   <SaveLocalMetadata>false</SaveLocalMetadata>
   <EnableInternetProviders>true</EnableInternetProviders>
   <EnableAutomaticSeriesGrouping>false</EnableAutomaticSeriesGrouping>
@@ -28,7 +32,41 @@
   <SaveSubtitlesWithMedia>true</SaveSubtitlesWithMedia>
   <TypeOptions>
     <TypeOptions>
-      <Type>Movie</Type>
+      <Type>Series</Type>
+      <MetadataFetchers>
+        <string>TheMovieDb</string>
+        <string>The Open Movie Database</string>
+      </MetadataFetchers>
+      <MetadataFetcherOrder>
+        <string>TheMovieDb</string>
+        <string>The Open Movie Database</string>
+      </MetadataFetcherOrder>
+      <ImageFetchers>
+        <string>TheMovieDb</string>
+      </ImageFetchers>
+      <ImageFetcherOrder>
+        <string>TheMovieDb</string>
+      </ImageFetcherOrder>
+      <ImageOptions />
+    </TypeOptions>
+    <TypeOptions>
+      <Type>Season</Type>
+      <MetadataFetchers>
+        <string>TheMovieDb</string>
+      </MetadataFetchers>
+      <MetadataFetcherOrder>
+        <string>TheMovieDb</string>
+      </MetadataFetcherOrder>
+      <ImageFetchers>
+        <string>TheMovieDb</string>
+      </ImageFetchers>
+      <ImageFetcherOrder>
+        <string>TheMovieDb</string>
+      </ImageFetcherOrder>
+      <ImageOptions />
+    </TypeOptions>
+    <TypeOptions>
+      <Type>Episode</Type>
       <MetadataFetchers>
         <string>TheMovieDb</string>
         <string>The Open Movie Database</string>
